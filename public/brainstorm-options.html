@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Opcoes do Blog</title>
+    <style>
+        :root {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+            color: #17201a;
+            background: #f6f7f3;
+        }
+
+        body {
+            margin: 0;
+            padding: 34px;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: 0 0 8px;
+        }
+
+        p {
+            color: #536056;
+            line-height: 1.5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #dfe4dc;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px #17201a12;
+            overflow: hidden;
+        }
+
+        .head {
+            padding: 18px;
+            border-bottom: 1px solid #e7ebe4;
+            background: #fbfcf8;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            color: #0f6b4a;
+            background: #dff5ea;
+            padding: 4px 8px;
+            border-radius: 999px;
+            margin-bottom: 10px;
+        }
+
+        .mock {
+            height: 210px;
+            padding: 14px;
+            background: #f1f4ed;
+            display: grid;
+            grid-template-columns: 1fr 92px;
+            gap: 10px;
+        }
+
+        .bar,
+        .line,
+        .tile,
+        .side {
+            border-radius: 6px;
+            background: #fff;
+            border: 1px solid #dce2d8;
+        }
+
+        .bar {
+            height: 24px;
+            grid-column: 1 / -1;
+        }
+
+        .line {
+            height: 14px;
+            margin: 8px;
+        }
+
+        .tile {
+            height: 48px;
+            margin: 8px;
+        }
+
+        .side {
+            padding: 8px;
+        }
+
+        .body {
+            padding: 18px;
+        }
+
+        .body h2 {
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
+
+        .body ul {
+            padding-left: 18px;
+            color: #3f4a42;
+        }
+
+        .rec {
+            outline: 3px solid #1d8f62;
+        }
+
+        .footer {
+            margin-top: 22px;
+            padding: 16px;
+            background: #eaf2ee;
+            border: 1px solid #cadbd1;
+            border-radius: 8px;
+            color: #234033;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>Escolha a arquitetura do blog SEO/GEO</h1>
+        <p>As tres opcoes funcionam com Laravel + Blade + JS, MySQL local e registro fechado. A diferenca e quanto vamos entregar no primeiro ciclo.</p>
+
+        <div class="grid">
+            <section class="card">
+                <div class="head">
+                    <span class="badge">A - MVP enxuto</span>
+                    <strong>Blog + painel essencial</strong>
+                </div>
+                <div class="mock">
+                    <div class="bar"></div>
+                    <div>
+                        <div class="line"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                    </div>
+                    <div class="side">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>Entrega rapida</h2>
+                    <ul>
+                        <li>CRUD de posts</li>
+                        <li>Meta tags e sitemap</li>
+                        <li>Robots e llms.txt</li>
+                        <li>Scripts globais</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="card rec">
+                <div class="head">
+                    <span class="badge">B - Recomendado</span>
+                    <strong>Blog editorial completo</strong>
+                </div>
+                <div class="mock">
+                    <div class="bar"></div>
+                    <div>
+                        <div class="line"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                    </div>
+                    <div class="side">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="tile"></div>
+                        <div class="line"></div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>Melhor equilibrio</h2>
+                    <ul>
+                        <li>Posts, categorias, tags e autores</li>
+                        <li>Checklist SEO/GEO por postagem</li>
+                        <li>Search Console/scripts gerenciaveis</li>
+                        <li>Sitemap segmentado e feed</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="head">
+                    <span class="badge">C - Plataforma de crescimento</span>
+                    <strong>SEO + distribuicao avancada</strong>
+                </div>
+                <div class="mock">
+                    <div class="bar"></div>
+                    <div>
+                        <div class="line"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                    </div>
+                    <div class="side">
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                        <div class="tile"></div>
+                    </div>
+                </div>
+                <div class="body">
+                    <h2>Mais poderoso</h2>
+                    <ul>
+                        <li>Tudo do B</li>
+                        <li>Web Stories editor/publicacao</li>
+                        <li>IndexNow</li>
+                        <li>Relatorios e automacoes</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">Minha recomendacao: opcao B no primeiro ciclo, deixando ganchos claros para Web Stories e IndexNow sem prender a entrega inicial.</div>
+    </div>
+</body>
+</html>

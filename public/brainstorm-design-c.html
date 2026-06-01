@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arquitetura do Blog SEO/GEO</title>
+    <style>
+        :root {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+            color: #17201a;
+            background: #f6f7f3;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin: 0 0 8px;
+        }
+
+        p {
+            color: #526157;
+            line-height: 1.5;
+        }
+
+        .map {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #dfe4dc;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 10px 30px #17201a12;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin: 0 0 12px;
+        }
+
+        .stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .box {
+            border: 1px solid #d9e2d7;
+            border-radius: 8px;
+            padding: 12px;
+            background: #fbfcf8;
+        }
+
+        .box strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .box span {
+            color: #5a675e;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .accent {
+            border-color: #1d8f62;
+            background: #edf8f2;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #eaf2ee;
+            border: 1px solid #cadbd1;
+            color: #234033;
+        }
+
+        @media (max-width: 850px) {
+            body {
+                padding: 18px;
+            }
+
+            .map {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <h1>Desenho da plataforma editorial SEO/GEO</h1>
+        <p>Escopo escolhido: opcao C, com Web Stories preparado para depois. O primeiro ciclo entrega blog, painel, SEO tecnico, GEO/IA, scripts, sitemap e distribuicao/indexacao.</p>
+
+        <section class="map">
+            <div class="panel">
+                <h2>Publico</h2>
+                <div class="stack">
+                    <div class="box accent">
+                        <strong>Home e listagens</strong>
+                        <span>Posts publicados, categorias, tags, busca, pagina autoral e conteudo escaneavel.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Postagem otimizada</strong>
+                        <span>Canonical, Open Graph, Twitter Card, Article schema, FAQ/HowTo opcionais, breadcrumbs e links relacionados.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Arquivos de entrega</strong>
+                        <span>Sitemap index, sitemaps segmentados, RSS/Atom, robots.txt e llms.txt.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Painel administrativo</h2>
+                <div class="stack">
+                    <div class="box accent">
+                        <strong>CRUD editorial</strong>
+                        <span>Posts, categorias, tags, autores, status, agendamento e destaque.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Checklist SEO/GEO</strong>
+                        <span>Campos de titulo, descricao, slug, resumo IA, entidades, perguntas respondidas e score editorial.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Scripts e verificacoes</strong>
+                        <span>Google Search Console, Analytics, pixels, metatags de verificacao e scripts por posicao.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Distribuicao e indexacao</h2>
+                <div class="stack">
+                    <div class="box accent">
+                        <strong>IndexNow</strong>
+                        <span>Chave, endpoint e envio manual/automatico de URLs publicadas ou atualizadas.</span>
+                    </div>
+                    <div class="box">
+                        <strong>AI crawlers</strong>
+                        <span>Politica configuravel em robots.txt para Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot e outros.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Web Stories futuro</strong>
+                        <span>Migracoes e menu reservados, sem editor no primeiro ciclo.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Base tecnica</h2>
+                <div class="stack">
+                    <div class="box accent">
+                        <strong>Laravel + Blade + JS</strong>
+                        <span>Views server-rendered, pequenos recursos JS e Tailwind/Vite para interface.</span>
+                    </div>
+                    <div class="box">
+                        <strong>Auth oficial fechado</strong>
+                        <span>Starter kit/Fortify, registro publico desabilitado e acesso ao painel por usuarios autorizados.</span>
+                    </div>
+                    <div class="box">
+                        <strong>MySQL local Laragon</strong>
+                        <span>Banco MySQL em localhost, migrations versionadas e seed de usuario admin.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">Se este desenho estiver certo, o proximo passo e escrever a especificacao do projeto e depois transformar em plano de implementacao testavel.</div>
+    </main>
+</body>
+</html>
