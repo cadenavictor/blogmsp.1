@@ -1,24 +1,15 @@
-<!doctype html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Editar script - Blog MSP</title>
-    </head>
-    <body>
-        <main>
-            <p><a href="{{ route('admin.scripts.index') }}">Scripts</a></p>
-            <h1>Editar script</h1>
+@extends('layouts.admin', ['title' => 'Editar script'])
 
-            @if (session('status'))
-                <p role="status">{{ session('status') }}</p>
-            @endif
+@section('page-actions')
+    <a class="button secondary" href="{{ route('admin.scripts.index') }}">Scripts</a>
+@endsection
 
-            <form method="POST" action="{{ route('admin.scripts.update', $snippet) }}">
-                @csrf
-                @method('PUT')
-                @include('admin.scripts.form')
-            </form>
-        </main>
-    </body>
-</html>
+@section('content')
+    <section class="panel">
+        <form class="admin-form" method="POST" action="{{ route('admin.scripts.update', $snippet) }}">
+            @csrf
+            @method('PUT')
+            @include('admin.scripts.form')
+        </form>
+    </section>
+@endsection

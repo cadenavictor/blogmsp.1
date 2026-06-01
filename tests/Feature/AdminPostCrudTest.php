@@ -305,6 +305,42 @@ class AdminPostCrudTest extends TestCase
         $this->assertSame('current-slug', $post->refresh()->slug);
     }
 
+    public function test_edit_form_preserves_unchecked_featured_and_selected_tags_after_validation_error(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $category = $this->createCategory();
+        $tag = Tag::create(['name' => 'Laravel', 'slug' => 'laravel']);
+        $post = $this->createPost($admin, $category, [
+            'featured' => true,
+        ]);
+
+        $response = $this
+            ->actingAs($admin)
+            ->followingRedirects()
+            ->from("/admin/posts/{$post->id}/edit")
+            ->put("/admin/posts/{$post->id}", [
+                ...$this->validPostPayload($category),
+                'slug' => 'invalid slug',
+                'featured' => '0',
+                'tag_ids' => ['', (string) $tag->id],
+            ]);
+
+        $html = $response
+            ->assertOk()
+            ->assertSee('Revise os campos destacados.')
+            ->content();
+
+        $this->assertStringContainsString('<input type="hidden" name="featured" value="0">', $html);
+        $this->assertMatchesRegularExpression(
+            '/<input type="checkbox" name="featured" value="1"(?![^>]*checked)[^>]*>/',
+            $html,
+        );
+        $this->assertMatchesRegularExpression(
+            '/<input type="checkbox" name="tag_ids\[\]" value="'.preg_quote((string) $tag->id, '/').'"[^>]*checked[^>]*>/',
+            $html,
+        );
+    }
+
     public function test_mass_assignment_user_id_does_not_change_author_on_update(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);

@@ -1,30 +1,20 @@
-<!doctype html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Posts - Blog MSP</title>
-    </head>
-    <body>
-        <main>
-            <header>
-                <p><a href="{{ route('admin.dashboard') }}">Painel</a></p>
-                <h1>Posts</h1>
-                <p><a href="{{ route('admin.posts.create') }}">Novo post</a></p>
-            </header>
+@extends('layouts.admin', ['title' => 'Posts'])
 
-            @if (session('status'))
-                <p role="status">{{ session('status') }}</p>
-            @endif
+@section('page-actions')
+    <a class="button" href="{{ route('admin.posts.create') }}">Novo post</a>
+@endsection
 
-            <form method="GET" action="{{ route('admin.posts.index') }}">
-                <label>
-                    Busca
+@section('content')
+    <div class="stack">
+        <section class="panel">
+            <form class="filters" method="GET" action="{{ route('admin.posts.index') }}">
+                <label class="field">
+                    <span>Busca</span>
                     <input name="q" value="{{ $filters['q'] }}">
                 </label>
 
-                <label>
-                    Status
+                <label class="field">
+                    <span>Status</span>
                     <select name="status">
                         <option value="">Todos</option>
                         @foreach (['draft' => 'Rascunho', 'published' => 'Publicado', 'scheduled' => 'Agendado'] as $value => $label)
@@ -33,8 +23,8 @@
                     </select>
                 </label>
 
-                <label>
-                    Categoria
+                <label class="field">
+                    <span>Categoria</span>
                     <select name="category_id">
                         <option value="">Todas</option>
                         @foreach ($categories as $category)
@@ -43,8 +33,8 @@
                     </select>
                 </label>
 
-                <label>
-                    Tag
+                <label class="field">
+                    <span>Tag</span>
                     <select name="tag_id">
                         <option value="">Todas</option>
                         @foreach ($tags as $tag)
@@ -55,42 +45,50 @@
 
                 <button type="submit">Filtrar</button>
             </form>
+        </section>
 
+        <section class="panel">
             @if ($posts->count())
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Titulo</th>
-                            <th>Status</th>
-                            <th>Categoria</th>
-                            <th>Autor</th>
-                            <th>Acoes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($posts as $post)
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
                             <tr>
-                                <td>{{ $post->title }}</td>
-                                <td>{{ $post->status }}</td>
-                                <td>{{ $post->category->name }}</td>
-                                <td>{{ $post->author->name }}</td>
-                                <td>
-                                    <a href="{{ route('admin.posts.edit', $post) }}">Editar</a>
-                                    <form method="POST" action="{{ route('admin.posts.destroy', $post) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">Remover</button>
-                                    </form>
-                                </td>
+                                <th>Titulo</th>
+                                <th>Status</th>
+                                <th>Categoria</th>
+                                <th>Autor</th>
+                                <th>Acoes</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($posts as $post)
+                                <tr>
+                                    <td>{{ $post->title }}</td>
+                                    <td>{{ $post->status }}</td>
+                                    <td>{{ $post->category->name }}</td>
+                                    <td>{{ $post->author->name }}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{{ route('admin.posts.edit', $post) }}">Editar</a>
+                                            <form method="POST" action="{{ route('admin.posts.destroy', $post) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="danger" type="submit">Remover</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
-                {{ $posts->links() }}
+                <div class="pagination">
+                    {{ $posts->links() }}
+                </div>
             @else
-                <p>Nenhum post encontrado.</p>
+                <p class="empty">Nenhum post encontrado.</p>
             @endif
-        </main>
-    </body>
-</html>
+        </section>
+    </div>
+@endsection

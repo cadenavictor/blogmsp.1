@@ -43,6 +43,12 @@ class IndexNowSubmissionController extends Controller
                 ->with('error', 'Nao foi possivel conectar ao IndexNow. A tentativa foi registrada.');
         }
 
+        if (! $response->successful()) {
+            return redirect()
+                ->route('admin.indexnow.index')
+                ->with('error', "IndexNow retornou HTTP {$response->status()}. A tentativa foi registrada.");
+        }
+
         return redirect()
             ->route('admin.indexnow.index')
             ->with('status', 'URL enviada ao IndexNow.');

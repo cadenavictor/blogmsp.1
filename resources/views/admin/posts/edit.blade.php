@@ -1,24 +1,15 @@
-<!doctype html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Editar post - Blog MSP</title>
-    </head>
-    <body>
-        <main>
-            <p><a href="{{ route('admin.posts.index') }}">Posts</a></p>
-            <h1>Editar post</h1>
+@extends('layouts.admin', ['title' => 'Editar post'])
 
-            @if (session('status'))
-                <p role="status">{{ session('status') }}</p>
-            @endif
+@section('page-actions')
+    <a class="button secondary" href="{{ route('admin.posts.index') }}">Posts</a>
+@endsection
 
-            <form method="POST" action="{{ route('admin.posts.update', $post) }}">
-                @csrf
-                @method('PUT')
-                @include('admin.posts.form')
-            </form>
-        </main>
-    </body>
-</html>
+@section('content')
+    <section class="panel">
+        <form class="admin-form" method="POST" action="{{ route('admin.posts.update', $post) }}">
+            @csrf
+            @method('PUT')
+            @include('admin.posts.form')
+        </form>
+    </section>
+@endsection

@@ -94,6 +94,20 @@ class IndexNowClient
             return null;
         }
 
-        return substr($responseBody, 0, self::RESPONSE_BODY_LIMIT);
+        if (function_exists('mb_substr')) {
+            return mb_substr($responseBody, 0, self::RESPONSE_BODY_LIMIT, 'UTF-8');
+        }
+
+        if (preg_match_all('/./us', $responseBody, $characters) !== false) {
+            return implode('', array_slice($characters[0], 0, self::RESPONSE_BODY_LIMIT));
+        }
+
+        $asciiOnly = preg_replace('/[^\x00-\x7F]/', '', $responseBody);
+
+        if (! is_string($asciiOnly)) {
+            return '';
+        }
+
+        return substr($asciiOnly, 0, self::RESPONSE_BODY_LIMIT);
     }
 }

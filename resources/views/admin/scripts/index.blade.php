@@ -1,24 +1,14 @@
-<!doctype html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Scripts - Blog MSP</title>
-    </head>
-    <body>
-        <main>
-            <header>
-                <p><a href="{{ route('admin.dashboard') }}">Painel</a></p>
-                <h1>Scripts</h1>
-                <p><a href="{{ route('admin.scripts.create') }}">Novo script</a></p>
-            </header>
+@extends('layouts.admin', ['title' => 'Scripts'])
 
-            @if (session('status'))
-                <p role="status">{{ session('status') }}</p>
-            @endif
+@section('page-actions')
+    <a class="button" href="{{ route('admin.scripts.create') }}">Novo script</a>
+@endsection
 
-            @if ($snippets->count())
-                <table>
+@section('content')
+    <section class="panel">
+        @if ($snippets->count())
+            <div class="admin-table-wrap">
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -36,22 +26,26 @@
                                 <td>{{ $snippet->position }}</td>
                                 <td>{{ $snippet->is_active ? 'Sim' : 'Nao' }}</td>
                                 <td>
-                                    <a href="{{ route('admin.scripts.edit', $snippet) }}">Editar</a>
-                                    <form method="POST" action="{{ route('admin.scripts.destroy', $snippet) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">Remover</button>
-                                    </form>
+                                    <div class="table-actions">
+                                        <a href="{{ route('admin.scripts.edit', $snippet) }}">Editar</a>
+                                        <form method="POST" action="{{ route('admin.scripts.destroy', $snippet) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="danger" type="submit">Remover</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+            </div>
 
+            <div class="pagination">
                 {{ $snippets->links() }}
-            @else
-                <p>Nenhum script encontrado.</p>
-            @endif
-        </main>
-    </body>
-</html>
+            </div>
+        @else
+            <p class="empty">Nenhum script encontrado.</p>
+        @endif
+    </section>
+@endsection

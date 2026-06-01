@@ -253,6 +253,33 @@ class IndexNowTest extends TestCase
         ]);
     }
 
+    public function test_admin_submit_flashes_error_when_indexnow_returns_non_success_status(): void
+    {
+        config([
+            'app.url' => 'https://blog.example.test',
+            'services.indexnow.key' => 'admin-indexnow-key',
+        ]);
+
+        Http::fake([
+            'api.indexnow.org/*' => Http::response('IndexNow failure', 500),
+        ]);
+
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $this->actingAs($admin)
+            ->post('/admin/indexnow', [
+                'url' => 'https://blog.example.test/posts/admin-submit',
+            ])
+            ->assertRedirect('/admin/indexnow')
+            ->assertSessionHas('error')
+            ->assertSessionMissing('status');
+
+        $this->assertDatabaseHas('index_now_submissions', [
+            'url' => 'https://blog.example.test/posts/admin-submit',
+            'status_code' => 500,
+        ]);
+    }
+
     public function test_indexnow_response_body_is_truncated_for_success_and_failure_results(): void
     {
         config([
@@ -280,5 +307,30 @@ class IndexNowTest extends TestCase
 
         $this->assertSame(4000, strlen($bodies['https://blog.example.test/posts/failure']));
         $this->assertSame(4000, strlen($bodies['https://blog.example.test/posts/success']));
+    }
+
+    public function test_indexnow_response_body_truncation_preserves_valid_utf8(): void
+    {
+        config([
+            'app.url' => 'https://blog.example.test',
+            'services.indexnow.key' => 'truncate-indexnow-key',
+        ]);
+
+        $body = str_repeat('A', 3999).'ç'.str_repeat('é', 100);
+
+        Http::fake([
+            'api.indexnow.org/*' => Http::response($body, 500),
+        ]);
+
+        app(IndexNowClient::class)->submit([
+            'https://blog.example.test/posts/multibyte',
+        ]);
+
+        $submission = IndexNowSubmission::query()
+            ->where('url', 'https://blog.example.test/posts/multibyte')
+            ->firstOrFail();
+
+        $this->assertTrue(mb_check_encoding($submission->response_body, 'UTF-8'));
+        $this->assertLessThanOrEqual(4000, mb_strlen($submission->response_body, 'UTF-8'));
     }
 }
