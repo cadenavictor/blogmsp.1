@@ -1,0 +1,182 @@
+openapi: 3.1.0
+info:
+  title: Blog MSP API
+  version: "1.0"
+  description: >
+    API do Blog MSP, consumível por agentes (Codex). Permite ler o Google News
+    e criar posts completos e otimizados para SEO/GEO. O agente escreve o
+    conteúdo; o backend armazena e otimiza (slug único, SEO derivado, JSON-LD).
+servers:
+  - url: http://127.0.0.1:8000
+    description: Local (Laragon)
+security:
+  - ApiKeyAuth: []
+  - BearerAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    NewsItem:
+      type: object
+      properties:
+        title: { type: string }
+        link: { type: string, format: uri }
+        source: { type: string }
+        published_at: { type: [string, "null"], format: date-time }
+        snippet: { type: string }
+    PostInput:
+      type: object
+      required: [title, content]
+      properties:
+        title: { type: string, maxLength: 255 }
+        content: { type: string, description: "HTML semântico do artigo" }
+        excerpt: { type: string }
+        slug: { type: string }
+        category:
+          description: "id, slug ou nome (criado se não existir)"
+          type: [string, integer]
+        tags:
+          type: array
+          items: { type: [string, integer] }
+        status:
+          type: string
+          enum: [draft, published, scheduled]
+          default: published
+        cover_image_url: { type: string }
+        published_at: { type: string, format: date-time }
+        seo_title: { type: string }
+        seo_description: { type: string }
+        og_title: { type: string }
+        og_description: { type: string }
+        ai_summary: { type: string }
+        key_takeaways:
+          type: array
+          items: { type: string }
+        entities:
+          type: array
+          items: { type: string }
+        faq_items:
+          type: array
+          items:
+            type: object
+            required: [question, answer]
+            properties:
+              question: { type: string }
+              answer: { type: string }
+paths:
+  /api/ping:
+    get:
+      summary: Testa a chave e lista endpoints
+      responses:
+        "200": { description: OK }
+        "401": { description: Chave ausente/inválida }
+        "503": { description: CODEX_API_KEY não configurada }
+  /api/news:
+    get:
+      summary: Lê o Google News (palavras-chave ou monitoramento salvo)
+      parameters:
+        - { name: q, in: query, schema: { type: string }, description: "Palavras-chave (use q OU monitor)" }
+        - { name: monitor, in: query, schema: { type: string }, description: "slug/id de um monitoramento" }
+        - { name: language, in: query, schema: { type: string, example: pt-BR } }
+        - { name: country, in: query, schema: { type: string, example: BR } }
+        - { name: limit, in: query, schema: { type: integer, default: 20, maximum: 50 } }
+      responses:
+        "200":
+          description: Lista de notícias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query: { type: string }
+                  monitor: { type: [string, "null"] }
+                  count: { type: integer }
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/NewsItem" }
+        "422": { description: Faltou q ou monitor }
+  /api/news/digest:
+    get:
+      summary: Temas do blog (monitoramentos) + notícias de cada um
+      description: >
+        Em uma única chamada, cada monitoramento ativo com suas últimas notícias
+        do Google News. É o brief que o agente usa para escolher o tema, escrever
+        e publicar.
+      parameters:
+        - { name: monitor, in: query, schema: { type: string }, description: "slug/id para escopar a um tema" }
+        - { name: limit, in: query, schema: { type: integer, default: 5, maximum: 20 } }
+      responses:
+        "200":
+          description: Temas e notícias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: integer }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        monitor:
+                          type: object
+                          properties:
+                            id: { type: integer }
+                            name: { type: string }
+                            slug: { type: string }
+                            keywords: { type: string }
+                        count: { type: integer }
+                        items:
+                          type: array
+                          items: { $ref: "#/components/schemas/NewsItem" }
+  /api/news/monitors:
+    get:
+      summary: Monitoramentos ativos do Google News
+      responses:
+        "200": { description: OK }
+  /api/categories:
+    get:
+      summary: Categorias existentes
+      responses:
+        "200": { description: OK }
+  /api/tags:
+    get:
+      summary: Tags existentes
+      responses:
+        "200": { description: OK }
+  /api/posts:
+    get:
+      summary: Lista posts
+      parameters:
+        - { name: status, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: per_page, in: query, schema: { type: integer, default: 15, maximum: 50 } }
+      responses:
+        "200": { description: OK }
+    post:
+      summary: Cria um post completo e otimizado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PostInput" }
+      responses:
+        "201":
+          description: Post criado (retorna data.url, data.slug, etc.)
+        "422": { description: Validação falhou }
+        "401": { description: Chave ausente/inválida }
+  /api/posts/{slug}:
+    get:
+      summary: Lê um post pelo slug
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        "200": { description: OK }
+        "404": { description: Não encontrado }

@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\SiteSetting;
+use App\Services\SeoMetaBuilder;
 use Illuminate\Contracts\View\View;
 
 class HomeController extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(SeoMetaBuilder $seo): View
     {
+        $settings = SiteSetting::current();
+
         $posts = Post::query()
             ->published()
             ->with(['author', 'category'])
@@ -17,8 +21,9 @@ class HomeController extends Controller
             ->paginate(10);
 
         return view('public.index', [
-            'title' => 'Blog MSP',
-            'subtitle' => 'Artigos, guias e novidades publicados.',
+            'title' => $settings->home_title ?: $settings->siteName(),
+            'subtitle' => $settings->tagline ?: 'Artigos, guias e novidades publicados.',
+            'seoMeta' => $seo->forHome(),
             'posts' => $posts,
         ]);
     }

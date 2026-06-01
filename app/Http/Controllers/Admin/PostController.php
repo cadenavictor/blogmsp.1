@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\PostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\HtmlSanitizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -50,9 +51,20 @@ class PostController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('admin.posts.create', $this->formData(new Post(['status' => 'draft'])));
+        $post = new Post([
+            'status' => 'draft',
+            'title' => trim((string) $request->query('title', '')),
+        ]);
+
+        $sourceUrl = trim((string) $request->query('source_url', ''));
+
+        if ($sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
+            $post->content = '<p><em>Fonte de referencia: <a href="'.e($sourceUrl).'" rel="noopener">'.e($sourceUrl).'</a></em></p>';
+        }
+
+        return view('admin.posts.create', $this->formData($post));
     }
 
     public function store(PostRequest $request): RedirectResponse
@@ -117,6 +129,10 @@ class PostController extends Controller
     {
         $data = $request->safe()->except(['tag_ids', 'tags']);
         $data['featured'] = $request->boolean('featured');
+
+        if (isset($data['content'])) {
+            $data['content'] = app(HtmlSanitizer::class)->clean((string) $data['content']);
+        }
 
         return $data;
     }

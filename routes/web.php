@@ -1,10 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ApiReferenceController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IndexNowSubmissionController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\NewsMonitorController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ScriptSnippetController as AdminScriptSnippetController;
+use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Admin\TagController as AdminTagController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Public\AuthorController;
 use App\Http\Controllers\Public\CategoryController;
@@ -14,6 +19,7 @@ use App\Http\Controllers\Public\PostController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\TagController;
 use App\Services\IndexNowClient;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/sitemap.xml', [MachineReadableFileController::class, 'sitemapIndex'])->name('sitemap.index');
 Route::get('/sitemap-posts.xml', [MachineReadableFileController::class, 'sitemapPosts'])->name('sitemap.posts');
@@ -59,6 +65,13 @@ Route::middleware(['auth', 'admin'])
     ->group(function (): void {
         Route::get('indexnow', [IndexNowSubmissionController::class, 'index'])->name('indexnow.index');
         Route::post('indexnow', [IndexNowSubmissionController::class, 'store'])->name('indexnow.store');
+        Route::post('media', [MediaController::class, 'store'])->name('media.store');
+        Route::get('integracoes', [ApiReferenceController::class, 'index'])->name('integracoes');
+        Route::get('configuracoes/seo', [SiteSettingController::class, 'edit'])->name('settings.seo.edit');
+        Route::put('configuracoes/seo', [SiteSettingController::class, 'update'])->name('settings.seo.update');
         Route::resource('posts', AdminPostController::class)->except('show');
+        Route::resource('categories', AdminCategoryController::class)->except('show');
+        Route::resource('tags', AdminTagController::class)->except('show');
+        Route::resource('news', NewsMonitorController::class);
         Route::resource('scripts', AdminScriptSnippetController::class)->except('show');
     });

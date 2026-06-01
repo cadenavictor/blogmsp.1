@@ -64,13 +64,13 @@
                             @foreach ($posts as $post)
                                 <tr>
                                     <td>{{ $post->title }}</td>
-                                    <td>{{ $post->status }}</td>
+                                    <td><span class="pill status-{{ $post->status }}">{{ ucfirst($post->status) }}</span></td>
                                     <td>{{ $post->category->name }}</td>
                                     <td>{{ $post->author->name }}</td>
                                     <td>
                                         <div class="table-actions">
                                             <a href="{{ route('admin.posts.edit', $post) }}">Editar</a>
-                                            <form method="POST" action="{{ route('admin.posts.destroy', $post) }}">
+                                            <form method="POST" action="{{ route('admin.posts.destroy', $post) }}" data-confirm="Remover o post {{ $post->title }}?">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button class="danger" type="submit">Remover</button>

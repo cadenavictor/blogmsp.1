@@ -4,13 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Login - Blog MSP</title>
+        @vite(['resources/css/admin.css'])
     </head>
-    <body>
-        <main>
-            <h1>Login</h1>
+    <body class="login-shell">
+        <main class="login-card">
+            <p class="admin-brand"><span class="dot"></span> Blog MSP</p>
+            <p class="muted">Acesso ao painel administrativo</p>
 
             @if ($errors->any())
-                <div role="alert">
+                <div class="alert error" role="alert">
                     {{ $errors->first() }}
                 </div>
             @endif
@@ -28,7 +30,7 @@
                     <input name="password" type="password" required>
                 </label>
 
-                <label>
+                <label class="check-field">
                     <input name="remember" type="checkbox" value="1">
                     Lembrar acesso
                 </label>

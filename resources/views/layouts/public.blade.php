@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="{{ ($siteSettings ?? null)?->language ?: 'pt-BR' }}">
 <head>
     @php
         $scriptSnippetsByPosition = $scriptSnippetsByPosition ?? collect();
@@ -31,6 +31,11 @@
     @foreach (($seoMeta['jsonLd'] ?? []) as $structuredData)
         <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
     @endforeach
+    @php $faviconUrl = ($siteSettings ?? null)?->imageUrl(($siteSettings ?? null)?->favicon_path); @endphp
+    @if ($faviconUrl)
+        <link rel="icon" href="{{ $faviconUrl }}">
+        <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+    @endif
     <style>
         :root {
             color-scheme: light;
@@ -84,6 +89,14 @@
             font-size: 1.15rem;
             font-weight: 700;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: block;
+            max-height: 40px;
+            width: auto;
         }
 
         .nav {
@@ -190,6 +203,85 @@
             font-size: 1.08rem;
         }
 
+        .content h2 {
+            font-size: 1.6rem;
+            line-height: 1.2;
+            margin: 1.6em 0 .5em;
+        }
+
+        .content h3 {
+            font-size: 1.3rem;
+            margin: 1.3em 0 .4em;
+        }
+
+        .content p {
+            margin: 0 0 1em;
+        }
+
+        .content ul,
+        .content ol {
+            margin: 0 0 1em;
+            padding-left: 1.4em;
+        }
+
+        .content li {
+            margin: .35em 0;
+        }
+
+        .content img {
+            border-radius: 8px;
+            height: auto;
+            max-width: 100%;
+        }
+
+        .content blockquote {
+            border-left: 4px solid var(--accent);
+            color: var(--muted);
+            margin: 1.2em 0;
+            padding: 4px 0 4px 16px;
+        }
+
+        .content pre {
+            background: #0f172a;
+            border-radius: 8px;
+            color: #e2e8f0;
+            overflow-x: auto;
+            padding: 14px 16px;
+        }
+
+        .takeaways {
+            background: #f1f5f9;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin: 28px 0 0;
+            padding: 18px 22px;
+        }
+
+        .takeaways h2,
+        .faq h2 {
+            font-size: 1.3rem;
+            margin: 0 0 10px;
+        }
+
+        .faq {
+            margin-top: 32px;
+        }
+
+        .faq details {
+            border-bottom: 1px solid var(--line);
+            padding: 12px 0;
+        }
+
+        .faq summary {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .faq details p {
+            margin: 10px 0 0;
+            color: var(--muted);
+        }
+
         .ai-summary {
             background: #eef6f4;
             border-left: 4px solid var(--accent);
@@ -260,7 +352,14 @@
     @endforeach
     <header class="site-header">
         <div class="wrap header-inner">
-            <a class="brand" href="{{ route('home') }}">Blog MSP</a>
+            <a class="brand" href="{{ route('home') }}">
+                @php $brandLogo = ($siteSettings ?? null)?->imageUrl(($siteSettings ?? null)?->logo_path); @endphp
+                @if ($brandLogo)
+                    <img class="brand-logo" src="{{ $brandLogo }}" alt="{{ ($siteSettings ?? null)?->siteName() ?? config('app.name', 'Blog MSP') }}">
+                @else
+                    {{ ($siteSettings ?? null)?->siteName() ?? config('app.name', 'Blog MSP') }}
+                @endif
+            </a>
             <nav class="nav" aria-label="Principal">
                 <a href="{{ route('home') }}">Inicio</a>
                 <form class="search" action="{{ route('search') }}" method="get">

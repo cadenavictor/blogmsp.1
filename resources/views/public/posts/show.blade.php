@@ -29,9 +29,34 @@
             @endif
         </header>
 
+        @if (! empty($post->key_takeaways))
+            <section class="takeaways" aria-label="Principais pontos">
+                <h2>Principais pontos</h2>
+                <ul>
+                    @foreach ($post->key_takeaways as $takeaway)
+                        <li>{{ $takeaway }}</li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
+
         <div class="content">
-            {!! nl2br(e($post->content)) !!}
+            {!! $post->content !!}
         </div>
+
+        @if (! empty($post->faq_items))
+            <section class="faq" aria-label="Perguntas frequentes">
+                <h2>Perguntas frequentes</h2>
+                @foreach ($post->faq_items as $faq)
+                    @if (! empty($faq['question']) && ! empty($faq['answer']))
+                        <details>
+                            <summary>{{ $faq['question'] }}</summary>
+                            <p>{{ $faq['answer'] }}</p>
+                        </details>
+                    @endif
+                @endforeach
+            </section>
+        @endif
 
         @if ($post->tags->isNotEmpty())
             <footer class="tags" aria-label="Tags">

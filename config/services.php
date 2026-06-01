@@ -26,6 +26,16 @@ return [
         'key' => env('INDEXNOW_KEY', 'local-indexnow-key'),
     ],
 
+    'codex' => [
+        'api_key' => env('CODEX_API_KEY'),
+    ],
+
+    'google_news' => [
+        'language' => env('GOOGLE_NEWS_LANGUAGE', 'pt-BR'),
+        'country' => env('GOOGLE_NEWS_COUNTRY', 'BR'),
+        'cache_ttl' => (int) env('GOOGLE_NEWS_CACHE_TTL', 900),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

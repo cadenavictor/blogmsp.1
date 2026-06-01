@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -55,6 +56,23 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * Estimated reading time in minutes, derived from the content.
+     *
+     * @return Attribute<int, never>
+     */
+    protected function readingTime(): Attribute
+    {
+        return Attribute::make(
+            get: function (): int {
+                $text = strip_tags((string) $this->content);
+                $words = preg_match_all('/\p{L}+/u', $text);
+
+                return max(1, (int) ceil(($words ?: 0) / 200));
+            },
+        )->shouldCache();
     }
 
     /**

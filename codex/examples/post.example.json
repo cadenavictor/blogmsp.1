@@ -1,0 +1,19 @@
+{
+  "title": "Como a IA está mudando o jornalismo",
+  "content": "<p>A inteligência artificial generativa já resume e recomenda notícias diretamente ao leitor, mudando como as redações produzem e distribuem conteúdo.</p><h2>O novo papel das redações</h2><p>Ferramentas de IA passaram a apoiar apuração, edição e distribuição. Veículos com sinais claros de autoridade são citados com mais frequência por assistentes.</p><h3>O que muda na prática</h3><ul><li>Apuração assistida por IA</li><li>Distribuição via assistentes e buscas generativas</li><li>Otimização para citação (GEO)</li></ul><p>Fonte de referência: <a href=\"https://news.google.com/\" rel=\"noopener\">Google News</a>.</p>",
+  "excerpt": "Como mecanismos generativos transformam a produção e o consumo de notícias — e o que é GEO.",
+  "category": "Inteligência Artificial",
+  "tags": ["IA", "jornalismo", "GEO"],
+  "status": "published",
+  "ai_summary": "A IA generativa muda o jornalismo ao resumir e recomendar conteúdo; marcas com autoridade são mais citadas.",
+  "key_takeaways": [
+    "Assistentes de IA resumem e recomendam notícias diretamente ao leitor.",
+    "GEO foca em ser citado pelas IAs, não apenas ranquear no Google.",
+    "Sinais de autoridade (Organization, autor, FAQ) aumentam as citações."
+  ],
+  "entities": ["OpenAI", "Google", "Perplexity", "Jornalismo"],
+  "faq_items": [
+    { "question": "O que é GEO?", "answer": "Generative Engine Optimization: otimizar conteúdo para ser citado por IAs como ChatGPT, Gemini e Perplexity." },
+    { "question": "GEO substitui o SEO?", "answer": "Não. GEO complementa o SEO; boas práticas de SEO tradicionais continuam valendo." }
+  ]
+}

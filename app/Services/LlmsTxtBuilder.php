@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\SiteSetting;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
@@ -12,15 +13,35 @@ class LlmsTxtBuilder
 {
     public function text(): string
     {
-        $siteName = $this->plainText((string) config('app.name', 'Blog MSP'));
+        $settings = SiteSetting::current();
+        $siteName = $this->plainText($settings->siteName());
+        $summary = $this->plainText($settings->llms_summary)
+            ?: "{$siteName} publishes articles, guides, and updates for MSP operators and technical teams.";
 
-        return collect([
+        $header = [
             "# {$siteName}",
             '',
             "Site: {$this->url('/')}",
             '',
-            "Summary: {$siteName} publishes articles, guides, and updates for MSP operators and technical teams.",
+            "Summary: {$summary}",
             '',
+        ];
+
+        foreach ([
+            'Contact' => $this->plainText($settings->contact_email),
+            'AI Policy' => $this->plainText($settings->ai_policy),
+        ] as $label => $value) {
+            if ($value !== '') {
+                $header[] = "{$label}: {$value}";
+            }
+        }
+
+        if (end($header) !== '') {
+            $header[] = '';
+        }
+
+        return collect([
+            ...$header,
             '## Key Sections',
             "- Home: {$this->url('/')}",
             ...$this->categoryLines(),

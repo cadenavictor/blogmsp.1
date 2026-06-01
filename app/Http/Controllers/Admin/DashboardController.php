@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\NewsMonitor;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -31,6 +34,11 @@ class DashboardController extends Controller
                 ])
                 ->values(),
             'totalPosts' => Post::query()->count(),
+            'totalCategories' => Category::query()->count(),
+            'totalTags' => Tag::query()->count(),
+            'activeMonitors' => NewsMonitor::query()->where('is_active', true)->count(),
+            'featuredMonitor' => NewsMonitor::query()->where('is_active', true)->orderBy('name')->first(),
+            'apiKeyConfigured' => trim((string) config('services.codex.api_key')) !== '',
             'recentPosts' => Post::query()
                 ->with(['author', 'category'])
                 ->latest('updated_at')
