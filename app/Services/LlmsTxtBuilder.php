@@ -16,7 +16,7 @@ class LlmsTxtBuilder
         $settings = SiteSetting::current();
         $siteName = $this->plainText($settings->siteName());
         $summary = $this->plainText($settings->llms_summary)
-            ?: "{$siteName} publishes articles, guides, and updates for MSP operators and technical teams.";
+            ?: "{$siteName} publica reviews, guias e notícias sobre empresas e serviços na cidade de São Paulo.";
 
         $header = [
             "# {$siteName}",
@@ -44,6 +44,7 @@ class LlmsTxtBuilder
             ...$header,
             '## Key Sections',
             "- Home: {$this->url('/')}",
+            "- Privacy Policy: {$this->url('/privacidade')}",
             ...$this->categoryLines(),
             ...$this->tagLines(),
             '',

@@ -25,7 +25,7 @@ class SeoMetaBuilder
         $title = $title ?: $settings->siteName();
         $description = $description ?: $this->nullable($settings->default_meta_description);
         $canonical = $canonical ?: url()->current();
-        $image = $settings->imageUrl($settings->default_og_image);
+        $image = $settings->imageUrl($settings->default_og_image) ?? asset('images/melhores-sp-hero.png');
 
         return [
             'title' => $title,

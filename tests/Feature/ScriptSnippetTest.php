@@ -87,13 +87,34 @@ class ScriptSnippetTest extends TestCase
         }
     }
 
+    public function test_scripts_that_require_cookie_consent_are_deferred_until_acceptance(): void
+    {
+        $analyticsContent = '<script>window.analyticsLoaded = true;</script>';
+
+        ScriptSnippet::create([
+            'name' => 'Analytics',
+            'provider' => 'analytics',
+            'position' => 'body_end',
+            'content' => $analyticsContent,
+            'is_active' => true,
+            'requires_consent' => true,
+            'cookie_category' => 'analytics',
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee($analyticsContent, false)
+            ->assertSee('<template data-cookie-snippet data-cookie-category="analytics" data-cookie-position="body_end">', false)
+            ->assertSee(e($analyticsContent), false);
+    }
+
     public function test_public_home_page_does_not_break_when_script_snippets_table_is_missing(): void
     {
         Schema::dropIfExists('script_snippets');
 
         $this->get('/')
             ->assertOk()
-            ->assertSee('Blog MSP');
+            ->assertSee('Melhores de São Paulo');
     }
 
     public function test_admin_can_create_update_and_delete_script_snippet(): void
@@ -106,6 +127,8 @@ class ScriptSnippetTest extends TestCase
             'position' => 'head_end',
             'content' => '<meta name="google-site-verification" content="created-token">',
             'is_active' => '1',
+            'requires_consent' => '0',
+            'cookie_category' => 'essential',
             'notes' => 'Created note',
         ]);
 
@@ -118,6 +141,8 @@ class ScriptSnippetTest extends TestCase
         $this->assertSame('google_search_console', $snippet->provider);
         $this->assertSame('head_end', $snippet->position);
         $this->assertTrue($snippet->is_active);
+        $this->assertFalse($snippet->requires_consent);
+        $this->assertSame('essential', $snippet->cookie_category);
 
         $updateResponse = $this->actingAs($admin)->from("/admin/scripts/{$snippet->id}/edit")->put("/admin/scripts/{$snippet->id}", [
             'name' => 'Updated Search Console',
@@ -125,6 +150,8 @@ class ScriptSnippetTest extends TestCase
             'position' => 'body_end',
             'content' => '<script>window.updatedSnippet = true;</script>',
             'is_active' => '0',
+            'requires_consent' => '1',
+            'cookie_category' => 'analytics',
             'notes' => 'Updated note',
         ]);
 
@@ -139,6 +166,8 @@ class ScriptSnippetTest extends TestCase
         $this->assertSame('body_end', $snippet->position);
         $this->assertSame('<script>window.updatedSnippet = true;</script>', $snippet->content);
         $this->assertFalse($snippet->is_active);
+        $this->assertTrue($snippet->requires_consent);
+        $this->assertSame('analytics', $snippet->cookie_category);
         $this->assertSame('Updated note', $snippet->notes);
 
         $this->actingAs($admin)
@@ -161,11 +190,13 @@ class ScriptSnippetTest extends TestCase
             'provider' => '',
             'content' => '',
             'is_active' => '1',
+            'requires_consent' => '1',
+            'cookie_category' => 'tracking',
         ]);
 
         $response
             ->assertRedirect('/admin/scripts/create')
-            ->assertSessionHasErrors(['provider', 'content', 'position']);
+            ->assertSessionHasErrors(['provider', 'content', 'position', 'cookie_category']);
 
         $this->assertDatabaseMissing('script_snippets', [
             'name' => 'Broken snippet',

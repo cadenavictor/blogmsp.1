@@ -25,6 +25,7 @@ class ScriptSnippetController extends Controller
         return view('admin.scripts.create', [
             'snippet' => new ScriptSnippet(['position' => 'head_end']),
             'positions' => ScriptSnippet::positions(),
+            'cookieCategories' => ScriptSnippet::cookieCategories(),
         ]);
     }
 
@@ -42,6 +43,7 @@ class ScriptSnippetController extends Controller
         return view('admin.scripts.edit', [
             'snippet' => $script,
             'positions' => ScriptSnippet::positions(),
+            'cookieCategories' => ScriptSnippet::cookieCategories(),
         ]);
     }
 
@@ -68,8 +70,12 @@ class ScriptSnippetController extends Controller
      */
     private function snippetData(ScriptSnippetRequest $request): array
     {
-        $data = $request->safe()->except('is_active');
+        $data = $request->safe()->except(['is_active', 'requires_consent']);
         $data['is_active'] = $request->boolean('is_active');
+        $data['requires_consent'] = $request->boolean('requires_consent');
+        $data['cookie_category'] = $data['requires_consent']
+            ? ($data['cookie_category'] ?? ScriptSnippet::COOKIE_CATEGORY_ANALYTICS)
+            : ScriptSnippet::COOKIE_CATEGORY_ESSENTIAL;
 
         return $data;
     }

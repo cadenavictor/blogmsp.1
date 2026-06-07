@@ -24,6 +24,8 @@ class ScriptSnippetRequest extends FormRequest
             'position' => ['required', Rule::in(ScriptSnippet::positions())],
             'content' => ['required', 'string'],
             'is_active' => ['sometimes', 'boolean'],
+            'requires_consent' => ['sometimes', 'boolean'],
+            'cookie_category' => ['nullable', Rule::in(ScriptSnippet::cookieCategories())],
             'notes' => ['nullable', 'string'],
         ];
     }

@@ -1,14 +1,15 @@
 <!doctype html>
 <html lang="pt-BR">
     <head>
+        @php $siteSettings = \App\Models\SiteSetting::current(); @endphp
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login - Blog MSP</title>
+        <title>Login - {{ $siteSettings->siteName() }}</title>
         @vite(['resources/css/admin.css'])
     </head>
     <body class="login-shell">
         <main class="login-card">
-            <p class="admin-brand"><span class="dot"></span> Blog MSP</p>
+            <p class="admin-brand"><span class="dot"></span> {{ $siteSettings->siteName() }}</p>
             <p class="muted">Acesso ao painel administrativo</p>
 
             @if ($errors->any())

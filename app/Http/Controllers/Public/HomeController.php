@@ -22,7 +22,7 @@ class HomeController extends Controller
 
         return view('public.index', [
             'title' => $settings->home_title ?: $settings->siteName(),
-            'subtitle' => $settings->tagline ?: 'Artigos, guias e novidades publicados.',
+            'subtitle' => $settings->tagline ?: 'Curadoria independente de empresas, serviços e experiências em São Paulo.',
             'seoMeta' => $seo->forHome(),
             'posts' => $posts,
         ]);

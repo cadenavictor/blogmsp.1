@@ -35,6 +35,21 @@
         Ativo
     </label>
 
+    <label class="field">
+        <span>Categoria de cookie</span>
+        <select name="cookie_category">
+            @foreach (($cookieCategories ?? []) as $cookieCategory)
+                <option value="{{ $cookieCategory }}" @selected(old('cookie_category', $snippet->cookie_category ?: 'essential') === $cookieCategory)>{{ $cookieCategory }}</option>
+            @endforeach
+        </select>
+    </label>
+
+    <label class="check-field">
+        <input type="hidden" name="requires_consent" value="0">
+        <input type="checkbox" name="requires_consent" value="1" @checked((bool) old('requires_consent', $snippet->requires_consent))>
+        Exigir consentimento LGPD
+    </label>
+
     <label class="field span-2">
         <span>Conteudo</span>
         <textarea name="content" required>{{ old('content', $snippet->content) }}</textarea>

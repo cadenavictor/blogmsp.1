@@ -16,6 +16,7 @@ use App\Http\Controllers\Public\CategoryController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MachineReadableFileController;
 use App\Http\Controllers\Public\PostController;
+use App\Http\Controllers\Public\PrivacyController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\Public\TagController;
 use App\Services\IndexNowClient;
@@ -43,6 +44,7 @@ Route::get('/categorias/{category:slug}', CategoryController::class)->name('cate
 Route::get('/tags/{tag:slug}', TagController::class)->name('tags.show');
 Route::get('/autores/{user}', AuthorController::class)->name('authors.show');
 Route::get('/buscar', SearchController::class)->name('search');
+Route::get('/privacidade', PrivacyController::class)->name('privacy');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');

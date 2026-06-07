@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\SiteSetting;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -225,10 +226,11 @@ class MachineReadableFilesTest extends TestCase
         $response
             ->assertOk()
             ->assertHeader('content-type', 'text/plain; charset=UTF-8')
-            ->assertSee('# Blog MSP')
+            ->assertSee('# Melhores de São Paulo')
             ->assertSee('Site: https://blog.example.test')
             ->assertSee('## Key Sections')
             ->assertSee('- Home: https://blog.example.test')
+            ->assertSee('- Privacy Policy: https://blog.example.test/privacidade')
             ->assertSee('- Category: Guias - https://blog.example.test/categorias/guias')
             ->assertSee('- Tag: Automacao - https://blog.example.test/tags/automacao')
             ->assertSee('## Important Posts')
@@ -291,6 +293,7 @@ class MachineReadableFilesTest extends TestCase
             'app.name' => '<strong>Blog</strong> MSP',
             'app.url' => 'https://blog.example.test',
         ]);
+        SiteSetting::create(['site_name' => '<strong>Blog</strong> MSP']);
         Carbon::setTestNow('2026-05-31 12:00:00');
 
         $author = User::factory()->create();
@@ -337,6 +340,7 @@ class MachineReadableFilesTest extends TestCase
             'app.name' => 'Blog MSP & Partners',
             'app.url' => 'https://blog.example.test',
         ]);
+        SiteSetting::create(['site_name' => 'Blog MSP & Partners']);
         Carbon::setTestNow('2026-05-31 12:00:00');
 
         $author = User::factory()->create();

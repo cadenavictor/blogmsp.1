@@ -14,6 +14,7 @@
                             <th>Nome</th>
                             <th>Provider</th>
                             <th>Posicao</th>
+                            <th>Cookies</th>
                             <th>Ativo</th>
                             <th>Acoes</th>
                         </tr>
@@ -24,6 +25,7 @@
                                 <td>{{ $snippet->name }}</td>
                                 <td>{{ $snippet->provider }}</td>
                                 <td>{{ $snippet->position }}</td>
+                                <td>{{ $snippet->requires_consent ? 'Consentimento: '.$snippet->cookie_category : 'Essencial' }}</td>
                                 <td>{{ $snippet->is_active ? 'Sim' : 'Nao' }}</td>
                                 <td>
                                     <div class="table-actions">

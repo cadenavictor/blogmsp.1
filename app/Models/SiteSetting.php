@@ -39,8 +39,16 @@ class SiteSetting extends Model
     protected static function defaults(): array
     {
         return [
+            'site_name' => 'Melhores de São Paulo',
+            'tagline' => 'Curadoria independente de empresas, serviços e experiências em São Paulo.',
+            'home_title' => 'Melhores de São Paulo',
+            'home_meta_description' => 'Reviews, guias e notícias para comparar empresas, serviços e experiências na cidade de São Paulo com critérios editoriais claros.',
+            'default_meta_description' => 'Melhores de São Paulo reúne análises independentes, guias práticos e notícias sobre empresas e serviços da capital paulista.',
+            'organization_name' => 'Melhores de São Paulo',
+            'organization_description' => 'Blog editorial independente sobre empresas, serviços, bairros e experiências relevantes na cidade de São Paulo.',
             'locale' => 'pt_BR',
             'language' => 'pt-BR',
+            'llms_summary' => 'Melhores de São Paulo publica reviews, guias, dicas e notícias sobre empresas e serviços da cidade de São Paulo, com foco em critérios claros, contexto local e respostas úteis para mecanismos de busca e agentes de IA.',
             'allow_ai_training' => true,
             'allow_ai_search' => true,
         ];
@@ -56,10 +64,20 @@ class SiteSetting extends Model
             return new self(static::defaults());
         }
 
-        return Cache::rememberForever(
-            self::CACHE_KEY,
-            fn (): self => static::query()->orderBy('id')->first() ?? new self(static::defaults()),
-        );
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if ($cached instanceof self) {
+            return static::withDefaults($cached);
+        }
+
+        if ($cached !== null) {
+            Cache::forget(self::CACHE_KEY);
+        }
+
+        $settings = static::withDefaults(static::query()->orderBy('id')->first() ?? new self());
+        Cache::forever(self::CACHE_KEY, $settings);
+
+        return $settings;
     }
 
     protected static function booted(): void
@@ -70,7 +88,7 @@ class SiteSetting extends Model
 
     public function siteName(): string
     {
-        return $this->nonEmpty($this->site_name) ?? (string) config('app.name', 'Blog MSP');
+        return $this->nonEmpty($this->site_name) ?? static::defaults()['site_name'];
     }
 
     public function organizationName(): string
@@ -140,5 +158,16 @@ class SiteSetting extends Model
         $value = trim((string) $value);
 
         return $value === '' ? null : $value;
+    }
+
+    private static function withDefaults(self $settings): self
+    {
+        foreach (static::defaults() as $key => $value) {
+            if (blank($settings->getAttribute($key))) {
+                $settings->setAttribute($key, $value);
+            }
+        }
+
+        return $settings;
     }
 }

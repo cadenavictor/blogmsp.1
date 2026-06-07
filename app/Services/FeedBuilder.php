@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use App\Models\SiteSetting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -26,7 +27,10 @@ class FeedBuilder
             ->implode("\n");
 
         $updatedAt = $posts->max('updated_at') ?? now();
-        $siteName = (string) config('app.name', 'Blog MSP');
+        $settings = SiteSetting::current();
+        $siteName = $settings->siteName();
+        $description = $settings->default_meta_description
+            ?: "{$siteName} - reviews, guias e notícias sobre empresas e serviços em São Paulo.";
         $siteUrl = $this->url('/');
 
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -34,7 +38,7 @@ class FeedBuilder
             ."    <channel>\n"
             ."        <title>{$this->escape($siteName)}</title>\n"
             ."        <link>{$this->escape($siteUrl)}</link>\n"
-            ."        <description>{$this->escape($siteName)} - artigos, guias e novidades publicados.</description>\n"
+            ."        <description>{$this->escape($description)}</description>\n"
             ."        <lastBuildDate>{$this->date($updatedAt)}</lastBuildDate>\n"
             .$items."\n"
             ."    </channel>\n"

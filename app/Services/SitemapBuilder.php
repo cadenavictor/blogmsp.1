@@ -84,6 +84,10 @@ class SitemapBuilder
                         ->max('updated_at') ?? now()
                 ),
             ],
+            [
+                'loc' => $this->url('/privacidade'),
+                'lastmod' => $this->date(now()),
+            ],
         ]);
     }
 
