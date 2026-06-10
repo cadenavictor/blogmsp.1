@@ -164,6 +164,10 @@ class SeoMetaBuilder
             return $path;
         }
 
+        if (Str::startsWith($path, ['uploads/', '/uploads/', 'images/', '/images/'])) {
+            return asset(ltrim($path, '/'));
+        }
+
         return asset('storage/'.ltrim($path, '/'));
     }
 

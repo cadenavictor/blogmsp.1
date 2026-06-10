@@ -73,6 +73,23 @@ class SiteSettingTest extends TestCase
             ->assertSee('<img class="brand-logo" src="https://cdn.example.com/logo.png"', false);
     }
 
+    public function test_uploaded_logo_and_favicon_render_without_storage_link_url(): void
+    {
+        config(['app.url' => 'http://127.0.0.1:8000']);
+
+        SiteSetting::create([
+            'site_name' => 'Marca Visual',
+            'logo_path' => 'uploads/2026/06/logo.webp',
+            'favicon_path' => 'uploads/2026/06/favicon.png',
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<link rel="icon" href="http://127.0.0.1:8000/uploads/2026/06/favicon.png">', false)
+            ->assertSee('<img class="brand-logo" src="http://127.0.0.1:8000/uploads/2026/06/logo.webp"', false)
+            ->assertDontSee('/storage/uploads/', false);
+    }
+
     public function test_validation_rejects_invalid_email_and_social_url(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);

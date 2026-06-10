@@ -136,6 +136,10 @@ class SiteSetting extends Model
             return $path;
         }
 
+        if (str_starts_with($path, 'uploads/') || str_starts_with($path, '/uploads/') || str_starts_with($path, 'images/') || str_starts_with($path, '/images/')) {
+            return asset(ltrim($path, '/'));
+        }
+
         return asset('storage/'.ltrim($path, '/'));
     }
 

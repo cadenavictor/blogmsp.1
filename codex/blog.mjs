@@ -28,8 +28,36 @@
 //   node codex/blog.mjs publish artigo.json
 //   cat artigo.json | node codex/blog.mjs publish
 
-const BASE = (process.env.BLOG_API_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '');
-const KEY = process.env.BLOG_API_KEY || '';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+function readEnv() {
+  try {
+    return Object.fromEntries(
+      readFileSync(resolve(process.cwd(), '.env'), 'utf8')
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith('#') && line.includes('='))
+        .map((line) => {
+          const index = line.indexOf('=');
+          const key = line.slice(0, index).trim();
+          const value = line.slice(index + 1).trim().replace(/^['"]|['"]$/g, '');
+          return [key, value];
+        })
+    );
+  } catch {
+    return {};
+  }
+}
+
+const env = readEnv();
+const BASE = (
+  process.env.BLOG_API_URL ||
+  env.BLOG_API_URL ||
+  env.APP_URL ||
+  'http://127.0.0.1:8000'
+).replace(/\/+$/, '');
+const KEY = process.env.BLOG_API_KEY || env.BLOG_API_KEY || env.CODEX_API_KEY || '';
 
 function fail(message, code = 1) {
   console.error(`erro: ${message}`);

@@ -59,6 +59,32 @@
         </section>
 
         <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Rotina diaria de posts automaticos</h2>
+                    <p class="muted">Fluxo recomendado para o Codex consumir os monitoramentos do Google News, selecionar uma noticia relevante e publicar um artigo otimizado para SEO/GEO e agentes de IA.</p>
+                </div>
+            </div>
+
+            <ol class="steps">
+                <li>Configure <code>BLOG_API_URL={{ $baseUrl }}</code> e <code>BLOG_API_KEY</code> com o mesmo valor de <code>CODEX_API_KEY</code>.</li>
+                <li>Rode <code>node codex/blog.mjs ping</code> para validar a chave.</li>
+                <li>Gere o briefing com <code>node codex/blog.mjs research --limit 6</code> ou <code>node codex/daily-news-brief.mjs --limit 6 --recent 30</code>.</li>
+                <li>Use o prompt <code>codex/prompts/daily-news-post.md</code> para selecionar a noticia, escrever artigo original e preencher SEO, GEO, resumo para IA, entidades, FAQ e principais conclusoes.</li>
+                <li>Publique com <code>node codex/blog.mjs publish artigo.json</code>. O payload deve usar <code>status: published</code>.</li>
+            </ol>
+
+            <div class="codeblock">
+                <button type="button" class="button secondary copy" data-copy="#ex-daily-codex">Copiar</button>
+                <pre id="ex-daily-codex">node codex/blog.mjs ping
+node codex/daily-news-brief.mjs --limit 6 --recent 30
+node codex/blog.mjs publish artigo.json</pre>
+            </div>
+
+            <p class="muted">Criterio editorial: publicar somente quando houver fato novo, fonte identificavel, relevancia para empresas/servicos/experiencias em Sao Paulo e baixa chance de duplicar post recente.</p>
+        </section>
+
+        <section class="panel">
             <div class="panel-header"><div><h2>Outros endpoints</h2></div></div>
             <div class="endpoint"><span class="verb verb-get">GET</span> <code>/api/ping</code> — testa a chave e lista endpoints</div>
             <div class="endpoint"><span class="verb verb-get">GET</span> <code>/api/news/monitors</code> — monitoramentos ativos</div>

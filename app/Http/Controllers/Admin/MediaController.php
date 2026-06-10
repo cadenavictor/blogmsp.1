@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class MediaController extends Controller
 {
     /**
-     * Store an uploaded image on the public disk and return its URL.
+     * Store an uploaded image directly under public/uploads and return its URL.
      *
      * Used by the TipTap editor (image button) and the cover-image picker.
      */
@@ -19,11 +19,12 @@ class MediaController extends Controller
             'file' => ['required', 'image', 'mimes:jpg,jpeg,png,webp,gif,avif', 'max:5120'],
         ]);
 
-        $path = $validated['file']->store('uploads/'.now()->format('Y/m'), 'public');
+        $path = $validated['file']->store(now()->format('Y/m'), 'uploads');
+        $publicPath = 'uploads/'.$path;
 
         return response()->json([
-            'path' => $path,
-            'url' => asset('storage/'.$path),
+            'path' => $publicPath,
+            'url' => asset($publicPath),
         ], 201);
     }
 }

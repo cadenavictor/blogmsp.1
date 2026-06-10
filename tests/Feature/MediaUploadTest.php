@@ -19,7 +19,7 @@ class MediaUploadTest extends TestCase
 
     public function test_admin_can_upload_image(): void
     {
-        Storage::fake('public');
+        Storage::fake('uploads');
         $admin = User::factory()->create(['is_admin' => true]);
 
         $response = $this->actingAs($admin)->post('/admin/media', [
@@ -28,12 +28,16 @@ class MediaUploadTest extends TestCase
 
         $response->assertCreated()->assertJsonStructure(['path', 'url']);
 
-        Storage::disk('public')->assertExists($response->json('path'));
+        $this->assertStringStartsWith('uploads/', $response->json('path'));
+        $this->assertStringContainsString('/uploads/', $response->json('url'));
+        $this->assertStringNotContainsString('/storage/', $response->json('url'));
+
+        Storage::disk('uploads')->assertExists(str($response->json('path'))->after('uploads/')->toString());
     }
 
     public function test_non_image_is_rejected(): void
     {
-        Storage::fake('public');
+        Storage::fake('uploads');
         $admin = User::factory()->create(['is_admin' => true]);
 
         $this->actingAs($admin)

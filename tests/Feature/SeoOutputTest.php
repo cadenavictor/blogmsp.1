@@ -163,6 +163,42 @@ class SeoOutputTest extends TestCase
         );
     }
 
+    public function test_public_upload_cover_image_is_rendered_without_storage_link_url(): void
+    {
+        config(['app.url' => 'http://127.0.0.1:8000']);
+        Carbon::setTestNow('2026-05-31 12:00:00');
+
+        $author = User::factory()->create();
+        $category = Category::create([
+            'name' => 'Imagens',
+            'slug' => 'imagens',
+        ]);
+        Post::create([
+            'user_id' => $author->id,
+            'category_id' => $category->id,
+            'title' => 'Post com upload publico',
+            'slug' => 'post-com-upload-publico',
+            'excerpt' => 'Resumo com imagem publica.',
+            'content' => 'Conteudo completo do post.',
+            'cover_image_path' => 'uploads/2026/06/capa.jpg',
+            'status' => 'published',
+            'published_at' => now()->subDay(),
+        ]);
+
+        $response = $this->get('/posts/post-com-upload-publico');
+        $html = $response->getContent();
+
+        $response
+            ->assertOk()
+            ->assertSee('<meta property="og:image" content="http://127.0.0.1:8000/uploads/2026/06/capa.jpg">', false)
+            ->assertDontSee('/storage/uploads/2026/06/capa.jpg', false);
+
+        $this->assertSame(
+            'http://127.0.0.1:8000/uploads/2026/06/capa.jpg',
+            $this->jsonLdOfType($this->jsonLdFromHtml($html), 'BlogPosting')['image'],
+        );
+    }
+
     public function test_null_optional_seo_fields_do_not_break_json_ld(): void
     {
         config(['app.url' => 'http://127.0.0.1:8000']);
