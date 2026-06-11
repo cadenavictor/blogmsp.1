@@ -54,7 +54,8 @@ class SeoOutputTest extends TestCase
             ->assertSee('<title>Titulo SEO completo</title>', false)
             ->assertSee('<meta name="description" content="Descricao SEO que aparece nos buscadores.">', false)
             ->assertSee('<meta property="og:title" content="Titulo SEO completo">', false)
-            ->assertSee('Resumo gerado por IA para leitura rapida.');
+            // ai_summary nao e mais exibido visivelmente no post (segue em llms.txt/meta).
+            ->assertDontSee('Resumo gerado por IA para leitura rapida.');
 
         $jsonLd = $this->jsonLdFromHtml($response->getContent());
 
@@ -110,9 +111,7 @@ class SeoOutputTest extends TestCase
         $html = $response->getContent();
         $escapedPayload = '\\u003C/script\\u003E\\u003Cscript\\u003Ealert(1)\\u003C/script\\u003E';
 
-        $response
-            ->assertOk()
-            ->assertSee('Resumo IA &lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;', false);
+        $response->assertOk();
 
         $this->assertStringNotContainsString($payload, $html);
         $this->assertStringContainsString($escapedPayload, $html);

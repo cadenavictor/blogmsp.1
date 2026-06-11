@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 #[Fillable([
     'user_id',
@@ -56,6 +57,37 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * Public URL of the cover image, resolving stored paths (physical
+     * public/uploads, public/images, storage/) or absolute URLs.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function coverUrl(): Attribute
+    {
+        return Attribute::get(function (): ?string {
+            $path = trim((string) $this->cover_image_path);
+
+            if ($path === '') {
+                return null;
+            }
+
+            if (Str::startsWith($path, '//')) {
+                return 'https:'.$path;
+            }
+
+            if (Str::startsWith($path, ['http://', 'https://'])) {
+                return $path;
+            }
+
+            if (Str::startsWith($path, ['uploads/', '/uploads/', 'images/', '/images/'])) {
+                return asset(ltrim($path, '/'));
+            }
+
+            return asset('storage/'.ltrim($path, '/'));
+        });
     }
 
     /**

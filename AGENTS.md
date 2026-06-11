@@ -48,6 +48,10 @@ node codex/blog.mjs ping
 | `node codex/blog.mjs posts [--q termo]` / `get <slug>` | Lista / lê posts publicados |
 | `node codex/blog.mjs publish artigo.json` | **Publica** um post (corpo via arquivo ou STDIN) |
 
+> Para imagem de capa: use uma URL pública em `cover_image_url`, ou faça upload via
+> `POST /api/media` (campo multipart `file`) e use a `url` retornada. Os uploads vão
+> para um diretório físico (`public/uploads`), sem symlink.
+
 ## Fluxo de publicação automatizada (a partir dos temas do blog)
 
 1. **Puxe os temas + notícias** definidos no blog (uma chamada):

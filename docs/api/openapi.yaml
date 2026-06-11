@@ -180,3 +180,19 @@ paths:
       responses:
         "200": { description: OK }
         "404": { description: Não encontrado }
+  /api/media:
+    post:
+      summary: Upload de imagem (diretório físico public/uploads, sem symlink)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+      responses:
+        "201":
+          description: Retorna path e url públicos (use url em cover_image_url)
+        "422": { description: Arquivo inválido }

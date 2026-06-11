@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MediaController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\TaxonomyController;
@@ -50,4 +51,6 @@ Route::middleware('api.key')->group(function (): void {
     Route::get('/posts', [PostController::class, 'index'])->name('api.posts.index');
     Route::post('/posts', [PostController::class, 'store'])->name('api.posts.store');
     Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('api.posts.show');
+
+    Route::post('/media', [MediaController::class, 'store'])->name('api.media.store');
 });

@@ -4,6 +4,22 @@ import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
 
+// Imagem com largura ajustável (persistida como style="width:..." no HTML).
+const ResizableImage = Image.extend({
+    addAttributes() {
+        return {
+            ...this.parent?.(),
+            width: {
+                default: null,
+                parseHTML: (element) =>
+                    element.style.width || element.getAttribute('width') || null,
+                renderHTML: (attributes) =>
+                    attributes.width ? { style: `width: ${attributes.width}` } : {},
+            },
+        }
+    },
+})
+
 const csrfToken = () =>
     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
 
@@ -43,9 +59,22 @@ const TOOLBAR = [
     { name: 'link', label: '🔗', title: 'Link', run: setLink },
     { name: 'image', label: '🖼', title: 'Imagem', run: insertImage },
     { sep: true },
+    { name: 'img-50', label: '50%', title: 'Imagem a 50%', run: (e) => setImageWidth(e, '50%'), imageOnly: true },
+    { name: 'img-75', label: '75%', title: 'Imagem a 75%', run: (e) => setImageWidth(e, '75%'), imageOnly: true },
+    { name: 'img-100', label: '100%', title: 'Imagem a 100%', run: (e) => setImageWidth(e, '100%'), imageOnly: true },
+    { name: 'img-auto', label: '⤢', title: 'Tamanho original', run: (e) => setImageWidth(e, null), imageOnly: true },
+    { sep: true },
     { name: 'undo', label: '↶', title: 'Desfazer', run: (e) => e.chain().focus().undo().run() },
     { name: 'redo', label: '↷', title: 'Refazer', run: (e) => e.chain().focus().redo().run() },
 ]
+
+function setImageWidth(editor, width) {
+    if (!editor.isActive('image')) {
+        window.alert('Clique em uma imagem do conteúdo primeiro para redimensioná-la.')
+        return
+    }
+    editor.chain().focus().updateAttributes('image', { width }).run()
+}
 
 function setLink(editor) {
     const previous = editor.getAttributes('link').href
@@ -82,6 +111,7 @@ function buildToolbar(editor) {
     const bar = document.createElement('div')
     bar.className = 'editor-toolbar'
     const buttons = []
+    const imageButtons = []
 
     TOOLBAR.forEach((item) => {
         if (item.sep) {
@@ -101,6 +131,11 @@ function buildToolbar(editor) {
         if (item.active) {
             buttons.push({ button, active: item.active })
         }
+
+        if (item.imageOnly) {
+            button.classList.add('img-tool')
+            imageButtons.push(button)
+        }
     })
 
     const refresh = () => {
@@ -108,6 +143,8 @@ function buildToolbar(editor) {
             const on = Array.isArray(active) ? editor.isActive(...active) : editor.isActive(active)
             button.classList.toggle('is-active', on)
         })
+        const onImage = editor.isActive('image')
+        imageButtons.forEach((button) => button.classList.toggle('img-tool-on', onImage))
     }
 
     editor.on('selectionUpdate', refresh)
@@ -135,7 +172,7 @@ function initEditor(wrap) {
         extensions: [
             StarterKit,
             Link.configure({ openOnClick: false, autolink: true }),
-            Image,
+            ResizableImage,
             Placeholder.configure({ placeholder: source.getAttribute('data-placeholder') || 'Escreva o conteudo...' }),
         ],
         content: source.value || '',

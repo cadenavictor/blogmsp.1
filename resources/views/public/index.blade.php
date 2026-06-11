@@ -69,6 +69,11 @@
             @if ($posts->count())
                 @if ($featuredPost)
                     <article class="featured-post">
+                        @if ($featuredPost->cover_url)
+                            <a class="featured-media" href="{{ route('posts.show', $featuredPost->slug) }}">
+                                <img src="{{ $featuredPost->cover_url }}" alt="{{ $featuredPost->title }}" loading="lazy">
+                            </a>
+                        @endif
                         <div class="featured-label">Destaque editorial</div>
                         <p class="meta">
                             @if ($featuredPost->published_at)
@@ -89,6 +94,11 @@
                 <div class="post-list" aria-label="Posts">
                     @foreach ($postItems as $post)
                         <article class="post-card">
+                            @if ($post->cover_url)
+                                <a class="post-card-media" href="{{ route('posts.show', $post->slug) }}">
+                                    <img src="{{ $post->cover_url }}" alt="{{ $post->title }}" loading="lazy">
+                                </a>
+                            @endif
                             <p class="meta">
                                 @if ($post->published_at)
                                     <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->format('d/m/Y') }}</time>

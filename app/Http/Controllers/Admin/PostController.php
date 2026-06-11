@@ -134,6 +134,12 @@ class PostController extends Controller
             $data['content'] = app(HtmlSanitizer::class)->clean((string) $data['content']);
         }
 
+        // Sem data informada em um post publicado: usar AGORA (senao o post nao
+        // aparece, pois o escopo published() exige published_at <= now()).
+        if (($data['status'] ?? null) === 'published' && empty($data['published_at'])) {
+            $data['published_at'] = now();
+        }
+
         return $data;
     }
 

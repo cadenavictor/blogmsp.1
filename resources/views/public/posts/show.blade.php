@@ -29,10 +29,13 @@
                         <span aria-hidden="true">/</span>
                         <span>{{ $post->reading_time }} min de leitura</span>
                     </p>
-                    @if ($post->ai_summary)
-                        <p class="ai-summary"><strong>Resumo para IA:</strong> {{ $post->ai_summary }}</p>
-                    @endif
                 </header>
+
+                @if ($post->cover_url)
+                    <figure class="article-cover">
+                        <img src="{{ $post->cover_url }}" alt="{{ $post->title }}">
+                    </figure>
+                @endif
 
                 @if (! empty($post->key_takeaways))
                     <section class="takeaways" aria-label="Principais pontos">
