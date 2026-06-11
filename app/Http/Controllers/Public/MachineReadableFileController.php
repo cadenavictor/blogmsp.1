@@ -39,7 +39,7 @@ class MachineReadableFileController extends Controller
     public function feed(FeedBuilder $feedBuilder): Response
     {
         return response($feedBuilder->rss(), 200, [
-            'Content-Type' => 'application/rss+xml',
+            'Content-Type' => 'application/rss+xml; charset=UTF-8',
         ]);
     }
 
@@ -56,7 +56,7 @@ class MachineReadableFileController extends Controller
     private function xml(string $content): Response
     {
         return response($content, 200, [
-            'Content-Type' => 'application/xml',
+            'Content-Type' => 'application/xml; charset=UTF-8',
         ]);
     }
 

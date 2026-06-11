@@ -30,7 +30,7 @@ class MachineReadableFilesTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertHeader('content-type', 'application/xml');
+            ->assertHeader('content-type', 'application/xml; charset=UTF-8');
 
         $xml = simplexml_load_string($response->getContent());
 
@@ -78,7 +78,7 @@ class MachineReadableFilesTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertHeader('content-type', 'application/xml');
+            ->assertHeader('content-type', 'application/xml; charset=UTF-8');
 
         $xml = simplexml_load_string($response->getContent());
         $urls = $xml->xpath('//*[local-name()="url"]');
@@ -151,7 +151,7 @@ class MachineReadableFilesTest extends TestCase
 
         $this->get('/sitemap-posts.xml')
             ->assertOk()
-            ->assertHeader('content-type', 'application/xml')
+            ->assertHeader('content-type', 'application/xml; charset=UTF-8')
             ->assertSee('<loc>https://blog.example.test/posts/post-indexavel</loc>', false)
             ->assertDontSee('post-noindex')
             ->assertDontSee('post-futuro');
@@ -172,7 +172,7 @@ class MachineReadableFilesTest extends TestCase
 
         $this->get('/feed.xml')
             ->assertOk()
-            ->assertHeader('content-type', 'application/rss+xml')
+            ->assertHeader('content-type', 'application/rss+xml; charset=UTF-8')
             ->assertSee('<title>Post Indexavel</title>', false)
             ->assertDontSee('Post Noindex')
             ->assertDontSee('Post Futuro');
